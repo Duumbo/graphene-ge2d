@@ -11,7 +11,7 @@ Les matrices à diagonaliser sont de la même taille que le nombre de vecteurs *
 devrait être testé. Le chemin de **k** utilisé se limite à des droites entre les points importants de la zone de Brillouin.
 
 ## Structure du projet
-Dans le fichier `src` se trouve le code source, écrit en python. Le script de base se trouve dans `\_\_main\_\_.py`, dans le
+Dans le fichier `src` se trouve le code source, écrit en python. Le script de base se trouve dans `__main__.py`, dans le
 but de pouvoir appeler le script dans le futur avec des arguments. Le dossier `tests` regroupe les tests unitaires, gérés par
 _pytest_. Le dossier `Images` est composé des différents graphiques et images générés par le code. Le dossier `raw_data` s'occupe
 de garder les sauvegardes de données computationnellement dispendieuses.
