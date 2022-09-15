@@ -34,3 +34,4 @@ les programmes de ce projet, on peut activer l'environnement avec:
 poetry shell
 python src/__main__.py
 ```
+L'installation de `scipy` peut être longue, comme il n'y a pas de _wheel_ déj
