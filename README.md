@@ -4,7 +4,7 @@ Simulation de la structure du graphène en utilisant un gaz d'électrons 2D en f
 ## Calcul de la structure de bande
 Le calcul de la structure de bande est fait en diagonalisant la matrice représentant l'équation de Schrödinger
 pour obtenir l'énergie selon certaine valeurs de **k**. Pour ce faire, on crée une grille dans l'espace réciproque
-des différents vecteurs **G**=n**b~1~**+m**b~2~** et on écrit la matrice pour chaque point **k** du chemin à évaluer.
+des différents vecteurs **G**=n**b<sub>1</sub>**+m**b<sub>2</sub>** et on écrit la matrice pour chaque point **k** du chemin à évaluer.
 ### Spécifications
 Les matrices à diagonaliser sont de la même taille que le nombre de vecteurs **G**. Les termes de cette matrices diminuent
 à zéro assez rapidement pour justifier l'utilisation de matrices multi-diagonales; le choix du nombre de diagonales utilisées
