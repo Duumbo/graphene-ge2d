@@ -1,2 +1,6 @@
 .venv/
 run.sh
+__pycache__/
+raw_data/
+.coverage
+Data_Exemple
