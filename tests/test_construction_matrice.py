@@ -8,8 +8,8 @@ Tests unitaire comportant:
 import numpy as np
 from scipy.special import j1
 import pytest
-import graphene_ge2d.matrice_coef as matrix
-from graphene_ge2d._constantes import r_0_bar, eta, eps, v_0, z_bar, e_0_inv, nc
+import graphene_ge2d.struc_bande.matrice_coef as matrix
+from graphene_ge2d.struc_bande._constantes import r_0_bar, eta, eps, v_0, z_bar, e_0_inv, nc
 
 
 def test_matrice_explicite():
