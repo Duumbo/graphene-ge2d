@@ -3,14 +3,9 @@
 """
 Diag de la matrice pour la structure de bande
 """
-from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-from scipy import sparse
-from numba import jit
-from .matrice_coef import gen_gs, get_matrice
-from ._constantes import (PATH, NDIAG, SIZE_MATRICES, GAMMA, POINT_M, POINT_K)
+from ._constantes import (PATH, NDIAG, SIZE_MATRICES)
 
 
 def joli_graphique(fig, ax, *args):
