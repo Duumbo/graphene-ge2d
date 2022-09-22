@@ -5,11 +5,17 @@ Script __main__.py
 Porte d'entrée pour le programme graphene_ge2d
 """
 import sys
-from struc_bande import write_matrix, compute_eigenvalues, generate_graph
+from struc_bande import (
+        write_matrix, compute_eigenvalues, generate_graph, potentiel
+)
 
 
 def run_matrix_gen():
     return write_matrix.__main__()
+
+
+def run_potentiel_map():
+    return potentiel.__main__()
 
 
 def run_eigenvalues_gen():
@@ -28,6 +34,8 @@ def __main__():
         return run_eigenvalues_gen()
     elif switch == "-g":
         return run_graph_gen()
+    elif switch == "-p":
+        return run_potentiel_map()
     else:
         raise ValueError("Invalid command: " + switch)
 

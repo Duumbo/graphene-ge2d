@@ -7,9 +7,7 @@ import numpy as np
 import scipy.special as sp
 from numba import jit
 import numba_scipy  # noqa: F401
-from ._constantes import (
-        c2, eta, v_0, r_0_bar, eps, z_bar, b1, b2, nc, e_0_inv
-)
+from . import _constantes as cons  # c2, eta, v_0, r_0_bar, eps, z_bar, b1, b2, nc
 
 
 @jit(nopython=True)
@@ -19,7 +17,7 @@ def coeffs(G):
     G: Les vecteurs G qu'on veut le coefficient
     """
     # La somme sur i
-    return 1 + np.exp(-1j * 2 * np.pi * np.dot(G, c2) / eta)
+    return 1 + np.exp(-1j * 2 * np.pi * np.dot(G, cons.c2) / cons.eta)
 
 
 @jit(nopython=True)
@@ -31,10 +29,10 @@ def coeffs_sim(G):
     """
     norm_g = np.linalg.norm(G)
     if norm_g <= 1e-100:
-        return v_0 * r_0_bar / (eps * eta)
-    bessel_boi = sp.j1(2 * np.pi * norm_g * r_0_bar / eta) / norm_g
-    petit_exp = np.exp(- 2 * np.pi * norm_g * z_bar / eta)
-    return v_0 * (r_0_bar / (eps * eta)) * bessel_boi * petit_exp
+        return cons.v_0 * cons.r_0_bar / (cons.eps * cons.eta)
+    bessel_boi = sp.j1(2 * np.pi * norm_g * cons.r_0_bar / cons.eta) / norm_g
+    petit_exp = np.exp(- 2 * np.pi * norm_g * cons.z_bar / cons.eta)
+    return cons.v_0 * (cons.r_0_bar / (cons.eps * cons.eta)) * bessel_boi * petit_exp
 
 
 @jit(nopython=True, parallel=True)
@@ -50,13 +48,17 @@ def gen_gs(ordre):
     n_possibles = [[i, j] for i in n_possibles_1 for j in n_possibles_2]
     n_poss = []
     [n_poss.append(x) for x in n_possibles if x not in n_poss]
+    norm_max = np.linalg.norm(ordre * cons.b1)
     for n in n_poss:
-        output.append(n[0] * b1 + n[1] * b2)
-    return output, len(n_poss)
+        curr_g = n[0] * cons.b1 + n[1] * cons.b2
+        curr_norm = np.linalg.norm(curr_g)
+        if curr_norm <= norm_max:
+            output.append(n[0] * cons.b1 + n[1] * cons.b2)
+    return output
 
 
 @jit(nopython=True, parallel=True)
-def get_matrice(taille_matrice, k, ndiag, vecteurs):
+def get_matrice(k, ndiag, vecteurs):
     """
     Get la matrice à diagonaliser
     n: matrice générée à partir de l'ordre n (n doit être n = 4m^2, m entier,
@@ -66,9 +68,10 @@ def get_matrice(taille_matrice, k, ndiag, vecteurs):
     ndiag: nombre de diagonales voulues (Le plus près possible de la diagonale
                                          centrale)
     """
+    taille_matrice = len(vecteurs)
     matrix = np.empty((taille_matrice, ndiag), dtype=np.complex128)
     for i, curr_g in enumerate(vecteurs):
-        matrix[i, 0] = np.dot(k + curr_g, k + curr_g) / nc
+        matrix[i, 0] = np.dot(k + curr_g, k + curr_g) / cons.nc
         for j in range((ndiag - 1) // 2):
             if i < len(vecteurs) - (1 + j):
                 other_g = vecteurs[i + j + 1]
@@ -78,4 +81,4 @@ def get_matrice(taille_matrice, k, ndiag, vecteurs):
                         take_the_conjugate := - (simetric_coef * changing_coef)
                 )
                 matrix[i, 2 * j + 2] = np.conjugate(take_the_conjugate)
-    return matrix * e_0_inv
+    return matrix

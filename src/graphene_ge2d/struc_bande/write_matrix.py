@@ -6,19 +6,19 @@ Diag de la matrice pour la structure de bande
 import numpy as np
 from numba import jit
 from .matrice_coef import gen_gs, get_matrice
-from ._constantes import (PATH, NDIAG, SIZE_MATRICES, GAMMA, POINT_M, POINT_K)
+from . import _constantes as cons  # (PATH, NDIAG, SIZE_MATRICES, GAMMA, POINT_M, POINT_K)
 
 
 def tracer_chemin():
 
     # Chemin 1, c'est de Gamma à M
-    partie_chemin_1 = np.linspace(GAMMA, POINT_M, PATH[0], endpoint=False)
+    partie_chemin_1 = np.linspace(cons.GAMMA, cons.POINT_M, cons.PATH[0], endpoint=False)
 
     # Chemin 2, c'est de M à K
-    partie_chemin_2 = np.linspace(POINT_M, POINT_K, PATH[1], endpoint=False)
+    partie_chemin_2 = np.linspace(cons.POINT_M, cons.POINT_K, cons.PATH[1], endpoint=False)
 
     # Chemin 3, c'est de K à Gamma
-    partie_chemin_3 = np.linspace(POINT_K, GAMMA, PATH[2], endpoint=False)
+    partie_chemin_3 = np.linspace(cons.POINT_K, cons.GAMMA, cons.PATH[2], endpoint=False)
 
     # On combine les chemins entre-eux
     chemin = np.append(partie_chemin_1, partie_chemin_2, axis=0)
@@ -34,10 +34,11 @@ def tracer_chemin():
 
 
 @jit(nopython=True)
-def produire_diagonales_no_scipy(size, path_k, vects):
-    output = np.empty((size, NDIAG, len(path_k)), dtype=np.complex128)
+def produire_diagonales_no_scipy(path_k, vects):
+    size = len(vects)
+    output = np.empty((size, cons.NDIAG, len(path_k)), dtype=np.complex128)
     for i, k in enumerate(path_k):
-        output[:, :, i] = get_matrice(size, k, NDIAG, vects)
+        output[:, :, i] = get_matrice(k, cons.NDIAG, vects)
     return output
 
 
@@ -46,13 +47,14 @@ def __main__():
     chemin, chemin_norm = tracer_chemin()
 
     # Tableau contenant les vecteurs G
-    vecteurs, size_matrix = gen_gs(SIZE_MATRICES)
+    vecteurs = gen_gs(cons.SIZE_MATRICES)
     # Tableau contenant les diagonales des matrices sparses à diagonaliser
-    diagonals = produire_diagonales_no_scipy(size_matrix, chemin, vecteurs)
+    diagonals = produire_diagonales_no_scipy(chemin, vecteurs)
 
     np.save("raw_data/chemin.npy", chemin)
     np.save("raw_data/chemin_norm.npy", chemin_norm)
     np.save("raw_data/diagonals.npy", diagonals)
+    np.save("raw_data/vecteurs.npy", vecteurs)
 
 
 if __name__ == "__main__":

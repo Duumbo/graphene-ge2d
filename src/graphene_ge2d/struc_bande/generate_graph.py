@@ -5,7 +5,7 @@ Diag de la matrice pour la structure de bande
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from ._constantes import (PATH, NDIAG, SIZE_MATRICES)
+from . import _constantes as cons  # (PATH, NDIAG, SIZE_MATRICES)
 
 
 def joli_graphique(fig, ax, *args):
@@ -15,13 +15,13 @@ def joli_graphique(fig, ax, *args):
     ax: l'axe actif
     """
     chemin_norm = args[0]
-    position_m = chemin_norm[PATH[0] - 1]
-    position_k = chemin_norm[PATH[0] + PATH[1] - 1]
+    position_m = chemin_norm[cons.PATH[0] - 1]
+    position_k = chemin_norm[cons.PATH[0] + cons.PATH[1] - 1]
     ax.set_xticks(
             [0., position_m, position_k, chemin_norm[-1]],
             [r"$\Gamma$", r"$M$", r"$K$", r"$\Gamma$"]
     )
-    ax.set_title(f"Structure de bande pour {NDIAG=}, {SIZE_MATRICES=}")
+    ax.set_title(f"Structure de bande pour {cons.NDIAG=}, {cons.SIZE_MATRICES=}")
     return fig, ax
 
 
@@ -40,12 +40,13 @@ def __main__():
         script.
         """
         # print(list_eigvals)
-        ax.plot(chemin_norm, list_eigvals[:, i], "o", markersize=2)
+        ax.plot(chemin_norm, list_eigvals[:, i], "o", markersize=1)
 
     # Beauté du graphique
     fig, ax = joli_graphique(fig, ax, *[chemin_norm])
 
     plt.show()
+    fig.savefig("Images/structure_de_bande.png")
 
 
 if __name__ == "__main__":

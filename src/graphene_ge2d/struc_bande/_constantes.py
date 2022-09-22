@@ -3,35 +3,64 @@
 """
 Définition des constantes
 """
+import sys
 import numpy as np
+from math import factorial
+
+cons = sys.modules[__name__]
 
 # Constantes
-SIZE_MATRICES = 8
+cons.SIZE_MATRICES = 8
+cons.n_mat = 3 * (SIZE_MATRICES + 1) * (SIZE_MATRICES + 1) - 4 * (SIZE_MATRICES + 1) + 1
 # Nombres de points dans le parcours de prise de données.
 # En ordre selon la partie
-PATH = [100, 100, 100]
+cons.DENS_POINT = 400
+cons.longueur_tot = (1 / np.sqrt(3)) + (1 / 3) + (2 / 3)
+cons.PATH = [int(DENS_POINT * (1 / np.sqrt(3)) / longueur_tot), int(DENS_POINT * (1 / 3) / longueur_tot), int(DENS_POINT * (2 / 3) / longueur_tot)]
 # Nombre de diagonales au centre de la matrice creuse (doit être impair)
-NDIAG = 1
-a = 130  # nm
-nc = 2
-a1 = np.array([a / 2, - a * np.sqrt(3) / 2])
-a2 = np.array([a, 0])
-c1 = np.array([0, 0])
-c2 = np.array([0, -1 / np.sqrt(3)])
-eta = np.sqrt(nc)
-eps = np.sqrt(3)/2
-v_0 = 1  # eV
-r_0 = 30  # nm
-r_0_bar = r_0 / a
-distance_plaque = 45  # nm
-b1 = np.array([0, - 2 / (3)])
-b2 = np.array([1 / (np.sqrt(3)), 1 / (3)])
-e_0_inv = a * a / 22_450
-z_bar = distance_plaque / a
+cons.NDIAG = SIZE_MATRICES * 2 + 1
+cons.a = 130  # nm
+cons.nc = 2
+cons.a1 = np.array([1 / 2, - np.sqrt(3) / 2])
+cons.a2 = np.array([1, 0])
+cons.c1 = np.array([0, 0])
+cons.c2 = np.array([0, -1 / np.sqrt(3)])
+cons.eta = np.sqrt(nc)
+cons.eps = np.sqrt(3)/2
+cons.v_0 = 1  # eV
+cons.r_0 = 30  # nm
+cons.r_0_bar = r_0 / a
+cons.distance_plaque = 0  # nm
+cons.b1 = np.array([0, - 2 / np.sqrt(3)])
+cons.b2 = np.array([1, 1 / np.sqrt(3)])
+cons.e_0_inv = a * a / 22_450
+cons.z_bar = distance_plaque / a
 # Points importants de la zone de Brillouin
 # Le point M
-POINT_M = np.array([1 / 2, 1 / (2 * np.sqrt(3))])
+cons.POINT_M = np.array([1 / 2, 1 / (2 * np.sqrt(3))])
 # Le point K
-POINT_K = np.array([2 / 3, 0])
+cons.POINT_K = np.array([2 / 3, 0])
 # Le point Gamma
-GAMMA = np.array([0, 0])
+cons.GAMMA = np.array([0, 0])
+
+with open("raw_data/constantes.log", "w") as fp:
+    lines = [
+            f"Dimension matrices: {n_mat}",
+            f"Nombre de points dans le chemin: {sum(PATH)}",
+            f"Nombre de diagonales: {NDIAG}",
+            f"Pas du réseau: {a}",
+            f"Nombre de points dans une cellule élémentaire: {nc}",
+            f"Epsilon: {eps}",
+            f"Potentiel appliqué: {v_0}",
+            f"Distance r_0: {r_0}",
+            f"Distance des plaques: {distance_plaque}",
+            f"Vecteurs de base:",
+            f"{a1=}, {a2=}",
+            f"{b1=}, {b2=}",
+            f"{c1=}, {c2=}",
+            f"Points importants de la zone de Brillouin:",
+            f"{POINT_M=}",
+            f"{POINT_K=}",
+            f"{GAMMA=}"
+    ]
+    fp.writelines(s + "\n" for s in lines)
