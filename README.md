@@ -32,6 +32,8 @@ _Poetry_ va automatiquement trouver l'environnement virtuel `.venv` créé préc
 les programmes de ce projet, on peut activer l'environnement avec:
 ```
 poetry shell
-python src/__main__.py
 ```
-L'installation de `scipy` peut être longue, comme il n'y a pas de _wheel_ déj
+L'installation de scipy peut être longue pour la version 3.10 de python. Pour lancer les calculs, il suffit d'appeler `make` avec la commande:
+```
+make
+```
