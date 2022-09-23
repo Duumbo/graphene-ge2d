@@ -13,23 +13,23 @@ from . import _constantes as cons  # v_0, distance_plaque
 
 
 def gen_heat_map():
-    nx, ny = 2000, 2000
-    xinf, xsup = -10, 10
-    yinf, ysup = -10, 10
+    nx, ny = 200, 200
+    xinf, xsup = -1, 1
+    yinf, ysup = -1, 1
 
     positions_x = np.linspace(xinf, xsup, nx)
     positions_y = np.linspace(yinf, ysup, ny)
     xv, yv = np.meshgrid(positions_x, positions_y)
-    out = np.zeros(xv.shape)
+    out = np.zeros(xv.shape, dtype=np.complex128)
 
     vecteurs = np.load("raw_data/vecteurs.npy")
 
     coefficients = coeffs(vecteurs) * coeffs_sim(vecteurs)
 
     for n, g in tqdm(enumerate(vecteurs)):
-        out += np.real(coefficients[n] * np.exp(1j * (xv * g[0] + yv * g[1])))
+        out += coefficients * np.exp(1j * 2 * np.pi * (xv * g[0] + yv * g[1]) / cons.eta)
 
-    return out
+    return np.real(out)
 
 
 def __main__():

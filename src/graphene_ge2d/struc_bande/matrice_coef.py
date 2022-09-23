@@ -17,7 +17,7 @@ def coeffs(G):
     G: Les vecteurs G qu'on veut le coefficient
     """
     # La somme sur i
-    return 1 + np.exp(-1j * 2 * np.pi * np.dot(G, cons.c2) / cons.eta)
+    return 1 #+ np.exp(-1j * 2 * np.pi * np.dot(G, cons.c2) / cons.eta)
 
 
 @jit(nopython=True)
@@ -81,4 +81,4 @@ def get_matrice(k, ndiag, vecteurs):
                         take_the_conjugate := - (simetric_coef * changing_coef)
                 )
                 matrix[i, 2 * j + 2] = np.conjugate(take_the_conjugate)
-    return matrix
+    return matrix / cons.e_0
