@@ -4,3 +4,8 @@ __pycache__/
 raw_data/
 .coverage
 Data_Exemple
+
+
+# Added by cargo
+
+/target
