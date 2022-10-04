@@ -39,6 +39,10 @@ def __main__():
     sns.heatmap(data)
     ax.set_title(rf"Potentiel à $V_0={cons.v_0}$ et $z={cons.distance_plaque}$")
     ax.set_aspect(1)
+    ax.set_xticks([x * 20 for x in range(11)])
+    ax.set_xticklabels([f"{np.round(x, 2)}" for x in np.linspace(-1, 1, 11)])
+    ax.set_yticks([y * 20 for y in range(11)])
+    ax.set_yticklabels([f"{np.round(y, 2)}" for y in np.linspace(-1, 1, 11)])
 
     plt.show()
     fig.savefig("Images/map_potentiel.png")

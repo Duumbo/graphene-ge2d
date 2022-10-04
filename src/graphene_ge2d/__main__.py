@@ -6,8 +6,12 @@ Porte d'entrée pour le programme graphene_ge2d
 """
 import sys
 from struc_bande import (
-        write_matrix, compute_eigenvalues, generate_graph, potentiel
+        write_matrix, compute_eigenvalues, generate_graph, potentiel, coquilles
 )
+
+
+def run_coquille_gen():
+    return coquilles.__main__()
 
 
 def run_matrix_gen():
@@ -36,6 +40,8 @@ def __main__():
         return run_graph_gen()
     elif switch == "-p":
         return run_potentiel_map()
+    elif switch == "-c":
+        return run_coquille_gen()
     else:
         raise ValueError("Invalid command: " + switch)
 

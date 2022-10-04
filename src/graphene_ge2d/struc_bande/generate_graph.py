@@ -33,7 +33,7 @@ def __main__():
     list_eigvals = np.load("raw_data/list_eigvals.npy")
     chemin_norm = np.load("raw_data/chemin_norm.npy")
 
-    for i in range(8):
+    for i in range(7):
         """
         Zone de production du graphique.
         Position temporaire dans le code, à déplacer dans un autre

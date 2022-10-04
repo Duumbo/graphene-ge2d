@@ -10,27 +10,29 @@ from math import factorial
 cons = sys.modules[__name__]
 
 # Constantes
-cons.SIZE_MATRICES = 8
-cons.n_mat = 3 * (SIZE_MATRICES + 1) * (SIZE_MATRICES + 1) - 4 * (SIZE_MATRICES + 1) + 1
+cons.SIZE_MATRICES = 3
+cons.n_mat = 37
+#cons.n_mat = 225
 # Nombres de points dans le parcours de prise de données.
 # En ordre selon la partie
 cons.DENS_POINT = 400
 cons.longueur_tot = (1 / np.sqrt(3)) + (1 / 3) + (2 / 3)
 cons.PATH = [int(DENS_POINT * (1 / np.sqrt(3)) / longueur_tot), int(DENS_POINT * (1 / 3) / longueur_tot), int(DENS_POINT * (2 / 3) / longueur_tot)]
 # Nombre de diagonales au centre de la matrice creuse (doit être impair)
-cons.NDIAG = SIZE_MATRICES * 2 + 1
-cons.a = 100  # nm
+cons.NDIAG = cons.n_mat
+cons.a = 130  # nm
 cons.nc = 1
 cons.a1 = np.array([1 / 2, - np.sqrt(3) / 2])
 cons.a2 = np.array([1, 0])
 cons.c1 = np.array([0, 0])
 #cons.c2 = np.array([0, -1 / np.sqrt(3)])
+cons.c2 = np.array([0, 0])
 cons.eta = np.sqrt(nc)
 cons.eps = np.sqrt(3)/2
-cons.v_0 = -0.1  # eV
-cons.r_0 = 10  # nm
+cons.v_0 = -1  # eV
+cons.r_0 = 30  # nm
 cons.r_0_bar = r_0 / a
-cons.distance_plaque = 0  # nm
+cons.distance_plaque = 45 # nm
 cons.b1 = np.array([0, - 2 / np.sqrt(3)])
 cons.b2 = np.array([1, 1 / np.sqrt(3)])
 cons.e_0 = 22_450 / (a * a)
