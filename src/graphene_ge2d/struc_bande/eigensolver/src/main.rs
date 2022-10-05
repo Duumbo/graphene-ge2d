@@ -1,3 +1,6 @@
+extern crate lapack_src;
+extern crate lapack_sys;
+
 use scilib::math::bessel;
 use rgsl::exponential;
 use num_complex::Complex;
@@ -42,6 +45,7 @@ fn potentiel(g: [f64; 2]) -> Complex::<f64> {
 }
 
 fn main() {
+    println!("cargo:rustc-link-lib=/usr/lib/liblapack.a");
     let EPS = f64::sqrt(3.0) / 2.0;
     let (vecteurs_g, indices_g) = coquilles(N_COQ);
     let n_vect = indices_g.len();
@@ -71,7 +75,7 @@ fn main() {
             }
         }
     }
-    println!("{:?}", matrice);
+    //println!("{:?}", matrice);
     // First let's allocate the working space for LAPACK
     let mut work: Vec<Complex::<f64>> = Vec::with_capacity(n_vect);
     let mut rwork: Vec<f64> = Vec::with_capacity(n_vect);
@@ -82,12 +86,15 @@ fn main() {
     let liwork: i32 = n_vect as i32;
     let mut info: i32 = 0;
 
-    let mut eigen_val: Vec<f64> = Vec::with_capacity(n_vect);
-    let mut zvec: Vec<Complex::<f64>> = Vec::with_capacity(n_vect);
+    let mut eigen_val: Vec<f64> = vec![0.0; n_vect];
+    println!("{:?}", eigen_val);
+    let mut zvec: Vec<Complex::<f64>> = vec![Complex::from(0.0); n_vect];
 
     // Now let's diagonalise it
     unsafe {
         zhpevd(b"N"[0], b"U"[0], n_vect as i32, &mut matrice, &mut eigen_val, &mut zvec, ldz,
                 &mut work, lwork, &mut rwork, lrwork, &mut iwork, liwork, &mut info);
     }
+    println!("{}", info);
+    println!("{:?}", eigen_val);
 }
