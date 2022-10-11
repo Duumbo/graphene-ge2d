@@ -3,9 +3,13 @@
 """
 Diag de la matrice pour la structure de bande
 """
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from . import _constantes as cons  # (PATH, NDIAG, SIZE_MATRICES)
+
+
+this = sys.modules[__name__]
 
 
 def joli_graphique(fig, ax, *args):
@@ -21,7 +25,9 @@ def joli_graphique(fig, ax, *args):
             [0., position_m, position_k, chemin_norm[-1]],
             [r"$\Gamma$", r"$M$", r"$K$", r"$\Gamma$"]
     )
-    ax.set_title(f"Structure de bande pour {cons.NDIAG=}, {cons.SIZE_MATRICES=}")
+    ax.set_ylabel(r"Énergie (Unités de $e_0$)")
+    ax.set_title(f"Structure de bande")
+    ax.set_ylim(-0.05, 8)
     return fig, ax
 
 
@@ -30,23 +36,37 @@ def __main__():
     fig, ax = plt.subplots()
 
     # Load data
-    list_eigvals = np.load("raw_data/list_eigvals.npy")
+    list_eigvals = np.loadtxt("raw_data/list_eigvals.txt")
     chemin_norm = np.load("raw_data/chemin_norm.npy")
 
-    for i in range(7):
+    # Lines to store the graphs
+    this.lines = []
+
+    for i in range(list_eigvals.shape[1]):
         """
         Zone de production du graphique.
         Position temporaire dans le code, à déplacer dans un autre
         script.
         """
         # print(list_eigvals)
-        ax.plot(chemin_norm, list_eigvals[:, i], "o", markersize=1)
+        this.lines.append(ax.plot(chemin_norm, list_eigvals[:, i], "o", markersize=1)[0])
 
     # Beauté du graphique
     fig, ax = joli_graphique(fig, ax, *[chemin_norm])
 
-    plt.show()
-    fig.savefig("Images/structure_de_bande.png")
+    def update_struct_bande():
+        # Reload data
+        list_eigvals = np.loadtxt("raw_data/list_eigvals.txt")
+        chemin_norm = np.load("raw_data/chemin_norm.npy")
+
+        for i, l in enumerate(this.lines):
+            l.set_data(chemin_norm, list_eigvals[:, i])
+
+        fig.canvas.draw_idle()
+
+    this.update_struct_bande = update_struct_bande
+
+    #fig.savefig("Images/structure_de_bande.png")
 
 
 if __name__ == "__main__":

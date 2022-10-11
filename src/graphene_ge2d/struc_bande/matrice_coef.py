@@ -49,11 +49,11 @@ def get_matrice(k, ndiag, vecteurs):
     taille_matrice = cons.n_mat
     matrix = np.zeros((taille_matrice, taille_matrice), dtype=np.complex128)
     for i, curr_g in enumerate(vecteurs):
-        matrix[i, i] = np.dot(k + curr_g, k + curr_g) / cons.nc
+        matrix[i, i] = np.dot(k + curr_g, k + curr_g) / (cons.nc * 2)
         for j in range(taille_matrice):
             if j > i < len(vecteurs):
                 other_g = vecteurs[j]
-                simetric_coef = coeffs_sim(curr_g - other_g)
+                simetric_coef = coeffs_sim(curr_g - other_g) / cons.e_0
                 changing_coef = coeffs(curr_g - other_g)
                 matrix[i, j] = - (simetric_coef * changing_coef)
     matrix = matrix + np.conjugate(matrix.transpose())

@@ -9,16 +9,9 @@ use rgsl::exponential;
 use num_complex::Complex;
 use lapack::zhpevd;
 
-const V_0: f64 = - 100.0;
-const R_0_BAR: f64 = 10.0 / 100.0;
-const ETA: f64 = 1.0;
-const N_COQ: u32 = 15;
 const PI: f64 = std::f64::consts::PI;
-const Z_BAR: f64 = 40.0 / 100.0;
-const E_0: f64 = 22_450.0 / (100.0 * 100.0);
 
 fn coquilles(n_coq: u32) -> (Vec<[f64; 2]>, Vec<[i64; 2]>) {
-    let EPS = f64::sqrt(3.0) / 2.0;
     let g_max_sq: f64 = (4.0 / 3.0) * (n_coq as f64);
 
     let mut list_perm: Vec<[f64; 2]> = Vec::new();
@@ -37,7 +30,12 @@ fn coquilles(n_coq: u32) -> (Vec<[f64; 2]>, Vec<[i64; 2]>) {
     (list_perm, list_ind)
 }
 
-fn potentiel(g: [f64; 2]) -> Complex::<f64> {
+fn potentiel(g: [f64; 2],
+             EPS: f64,
+             R_0_BAR: f64,
+             ETA: f64,
+             Z_BAR: f64,
+             V_0: f64) -> Complex::<f64> {
     let EPS = f64::sqrt(3.0) / 2.0;
     let norm_g = f64::sqrt(g[0]*g[0] + g[1]*g[1]);
     if norm_g < 1e-50 {
@@ -49,8 +47,19 @@ fn potentiel(g: [f64; 2]) -> Complex::<f64> {
 }
 
 fn main() {
-    //println!("cargo:rustc-link-lib=/usr/lib/liblapack.a");
-    let EPS = f64::sqrt(3.0) / 2.0;
+    let path_parametres = Path::new("raw_data/parametres.txt");
+    let chemin = fs::read_to_string(path_parametres)
+        .expect("Data for parameters does not exist, check that I look at the right place.");
+    let params = chemin.split(" ").collect::<Vec<&str>>();
+    let V_0: f64 = params[0].parse().expect("V_0 must be a real float.");
+    let R_0_BAR: f64 = params[1].parse().expect("R_0_BAR must be a real float.");
+    let ETA: f64 = params[2].parse().expect("ETA must be a real float.");
+    let N_COQ: u32 = params[3].parse().expect("N_COQ must be a real INT.");
+    let Z_BAR: f64 = params[4].parse().expect("Z_BAR must be a real float.");
+    let E_0: f64 = params[5].parse().expect("E_0 must be a real float.");
+    let _EPS: f64 = params[6].parse().expect("EPS must be a real float.");
+    let potentiel_param_set = |g: [f64; 2]| potentiel(g, _EPS, R_0_BAR, ETA, Z_BAR, V_0);
+
     let (vecteurs_g, indices_g) = coquilles(N_COQ);
     let n_vect = indices_g.len();
     let deff_val = Complex::from(0.0);
@@ -58,28 +67,29 @@ fn main() {
     // Let's get the potential for all those gs
     let mut pot: Vec<Complex::<f64>> = Vec::new();
     for i in 0..n_vect {
-        //pot.push(potentiel(vecteurs_g[i]));
-        pot.push(Complex::from(0.0));
+        pot.push(potentiel_param_set(vecteurs_g[i]));
+        //pot.push(Complex::from(0.0));
     }
 
     // Let's gen the potential for all non 0 Gs.
-    let mut matrice: Vec<Complex::<f64>> = Vec::new();
+    let mut matrice: Vec<Complex::<f64>> = vec![Complex::from(0.0); n_vect * (n_vect + 1) / 2];
     for i in 0..n_vect {
         let g1 = indices_g[i];
+        matrice[i * (i + 3)/2] = Complex::from(vecteurs_g[i][0]*vecteurs_g[i][0] + vecteurs_g[i][1]*vecteurs_g[i][1]);
         for j in 0..i {
             let g2 = indices_g[j];
             for t in 0..n_vect {
                 if (g2[0] - g1[0] == indices_g[t][0]) && (g2[1] - g1[1] == indices_g[t][1]) {
-                    matrice.push(- pot[t] / Complex::from(E_0));
-                    break;
+                   matrice[j + (i*(i as i32 + 1)as usize)/2] = - pot[t] / Complex::from(E_0);
+                  break;
                 }
-                if t == n_vect - 1 {
-                    //matrice.push(potentiel([vecteurs_g[j][0] - vecteurs_g[i][0], vecteurs_g[j][1] - vecteurs_g[i][1]]));
-                    matrice.push(deff_val);
-                }
+                //if t == n_vect - 1 {
+                //    matrice[j + (i*(i as i32 + 1) as usize)/2] = - potentiel(
+                //        [vecteurs_g[j][0] - vecteurs_g[i][0], vecteurs_g[j][1] - vecteurs_g[i][1]]) / Complex::from(E_0);
+                    //matrice.push(deff_val);
+                //}
             }
         }
-        matrice.push(Complex::from(vecteurs_g[i][0]*vecteurs_g[i][0] + vecteurs_g[i][1]*vecteurs_g[i][1]));
     }
     //println!("{:?}", matrice);
     // First let's allocate the working space for LAPACK
@@ -112,8 +122,8 @@ fn main() {
         for i in 0..n_vect {
             let curr_g = vecteurs_g[i];
             // The diagonal elements are always i away from the last one
-            matrice[i*(i + 1) / 2] = Complex::from((curr_g[0] + next_k[0]).powf(2.0) + (curr_g[1] + next_k[1]).powf(2.0));
-            strings.push(eigen_val[i].to_string());
+            matrice[i*(i + 3) / 2] = Complex::from((curr_g[0] + next_k[0]).powf(2.0) + (curr_g[1] + next_k[1]).powf(2.0));
+            strings.push((eigen_val[i] * E_0).to_string());
         }
         writeln!(output_eigval, "{}", strings.join(" "));
     }
@@ -133,7 +143,7 @@ fn diagonalise(
     liwork: &i32,
     info: &mut i32               // An int representing if it converged or not
 ) {  // Function changes by-reference the vector eigen_val
-    let mut vec_mat = matrice.to_vec();
+    let mut vec_mat = (*matrice).to_vec();
     unsafe {
         zhpevd(b"N"[0], b"U"[0], n_vect as i32, &mut vec_mat, eigen_val, zvec, *ldz,
                 work, *lwork, rwork, *lrwork, iwork, *liwork, info);

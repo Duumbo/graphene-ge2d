@@ -4,10 +4,17 @@
 Script __main__.py
 Porte d'entrée pour le programme graphene_ge2d
 """
+import matplotlib.pyplot as plt
 import sys
 from struc_bande import (
-        write_matrix, compute_eigenvalues, generate_graph, potentiel, coquilles
+        write_matrix, compute_eigenvalues, generate_graph, potentiel, coquilles, _runner, sliders
 )
+
+
+def run_interactive():
+    sliders._activate()
+    _runner.__main__()
+    plt.show()
 
 
 def run_coquille_gen():
@@ -42,6 +49,8 @@ def __main__():
         return run_potentiel_map()
     elif switch == "-c":
         return run_coquille_gen()
+    elif switch == "-i":
+        run_interactive()
     else:
         raise ValueError("Invalid command: " + switch)
 

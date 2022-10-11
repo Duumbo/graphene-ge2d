@@ -51,11 +51,12 @@ def __main__():
     #vecteurs_x = np.multiply(vecteurs[:, 0], cons.b1[:, np.newaxis])
     #vecteurs_y = np.multiply(vecteurs[:, 1], cons.b2[:, np.newaxis])
     # Tableau contenant les diagonales des matrices sparses à diagonaliser
-    matrices = produire_diagonales_no_scipy(chemin, vecteurs)
+    #matrices = produire_diagonales_no_scipy(chemin, vecteurs)
+    #print(matrices)
 
-    np.save("raw_data/chemin.npy", chemin)
+    np.savetxt("raw_data/chemin.txt", chemin)
     np.save("raw_data/chemin_norm.npy", chemin_norm)
-    np.save("raw_data/diagonals.npy", matrices)
+    #np.save("raw_data/diagonals.npy", matrices)
 
 
 if __name__ == "__main__":

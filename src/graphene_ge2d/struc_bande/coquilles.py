@@ -9,7 +9,7 @@ from . import _constantes as cons
 
 
 def __main__():
-    n_coq = 10
+    n_coq = 15
     g_max = (4 / 3) * n_coq
 
     # Gen toutes les permutations de composantes possibles
@@ -24,7 +24,7 @@ def __main__():
 
     np.save("raw_data/vecteurs.npy", np.array(list_perm))
     list_perm = np.array(list_perm)
-    print(len(list_perm))
+    print(list_perm)
 
     fig, ax = plt.subplots()
     ax.plot(list_perm[:, 0], list_perm[:, 1], "o")

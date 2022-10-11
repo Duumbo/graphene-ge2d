@@ -10,8 +10,9 @@ from math import factorial
 cons = sys.modules[__name__]
 
 # Constantes
+cons.NCOQ = 15
 cons.SIZE_MATRICES = 3
-cons.n_mat = 37
+cons.n_mat = 55
 #cons.n_mat = 225
 # Nombres de points dans le parcours de prise de données.
 # En ordre selon la partie
@@ -20,7 +21,7 @@ cons.longueur_tot = (1 / np.sqrt(3)) + (1 / 3) + (2 / 3)
 cons.PATH = [int(DENS_POINT * (1 / np.sqrt(3)) / longueur_tot), int(DENS_POINT * (1 / 3) / longueur_tot), int(DENS_POINT * (2 / 3) / longueur_tot)]
 # Nombre de diagonales au centre de la matrice creuse (doit être impair)
 cons.NDIAG = cons.n_mat
-cons.a = 130  # nm
+cons.a = 100  # nm
 cons.nc = 1
 cons.a1 = np.array([1 / 2, - np.sqrt(3) / 2])
 cons.a2 = np.array([1, 0])
@@ -29,10 +30,10 @@ cons.c1 = np.array([0, 0])
 cons.c2 = np.array([0, 0])
 cons.eta = np.sqrt(nc)
 cons.eps = np.sqrt(3)/2
-cons.v_0 = -1  # eV
-cons.r_0 = 30  # nm
+cons.v_0 = -100  # meV
+cons.r_0 = 10  # nm
 cons.r_0_bar = r_0 / a
-cons.distance_plaque = 45 # nm
+cons.distance_plaque = 40 # nm
 cons.b1 = np.array([0, - 2 / np.sqrt(3)])
 cons.b2 = np.array([1, 1 / np.sqrt(3)])
 cons.e_0 = 22_450 / (a * a)
@@ -67,3 +68,8 @@ with open("raw_data/constantes.log", "w") as fp:
             f"{GAMMA=}"
     ]
     fp.writelines(s + "\n" for s in lines)
+
+
+def update_constantes():
+    with open("raw_data/parametres.txt", "w") as fp:
+        fp.write(f"{cons.v_0} {cons.r_0_bar} {cons.eta} {cons.NCOQ} {cons.z_bar} {cons.e_0} {cons.eps}")
