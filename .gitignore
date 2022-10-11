@@ -8,4 +8,4 @@ Data_Exemple
 
 # Added by cargo
 
-/target
+src/graphene_ge2d/struc_bande/eigensolver/target
